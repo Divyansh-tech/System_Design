@@ -25,7 +25,7 @@ These are individual machines added to the system to collectively share the work
 In horizontal scaling, databases may be horizontally partitioned or sharded. Each shard contains a subset of the data, and multiple database servers collectively manage the entire dataset.
 
 
-## Database failover strategies
+## Database Failover Strategies
 ### 1. Cold Standby:
 A backup database server in a powered-off state, with periodic data updates from the primary database. Activation involves starting the server, restoring data, potentially leading to downtime.
 
@@ -77,6 +77,118 @@ Managing a sharded environment introduces operational complexities. Tasks such a
 Example: Adding or removing shards dynamically to accommodate changes in data volume or traffic patterns requires coordination and may impact the overall operational workload.
 
 
+## Normalized and Denormalized Data
+| Feature                | Normalized Data                                       | Denormalized Data                                     |
+|------------------------|-------------------------------------------------------|--------------------------------------------------------|
+| **Objective**          | Eliminate redundancy and reduce data anomalies.      | Improve query performance by introducing redundancy.   |
+| **Structure**          | Data organized into multiple related tables.         | Data may be duplicated to minimize the need for joins. |
+| **Redundancy**         | Minimized to avoid storing the same information.      | Accepted and deliberately introduced.                  |
+| **Advantages**         | Reduces data duplication and maintains consistency.  | Improves query performance for read-heavy workloads.    |
+| **Read Operations**    | May involve joins for complex queries.                | Simplified queries, potentially better performance.     |
+| **Write Operations**   | Generally simplified.                                | May introduce complexity due to data duplication.       |
+| **Data Integrity**     | Maintains data integrity with reduced redundancy.    | Accepts redundancy, potential for inconsistencies.      |
+
+### Normalized Data
+Users Table:
+| UserID | UserName | Email           |
+|--------|----------|-----------------|
+| 1      | Alice    | alice@email.com |
+| 2      | Bob      | bob@email.com   |
+
+BlogPosts Table:
+| PostID | Title          | Content              | UserID |
+|--------|----------------|----------------------|--------|
+| 101    | Post 1 Title   | Post 1 Content       | 1      |
+| 102    | Post 2 Title   | Post 2 Content       | 2      |
+
+### Denormalized Data
+UsersAndPosts Table:
+| PostID | Title          | Content              | UserName | Email           |
+|--------|----------------|----------------------|----------|-----------------|
+| 101    | Post 1 Title   | Post 1 Content       | Alice    | alice@email.com |
+| 101    | Post 1 Title   | Post 1 Content       | Bob      | bob@email.com   |
+| 102    | Post 2 Title   | Post 2 Content       | Alice    | alice@email.com |
+| 102    | Post 2 Title   | Post 2 Content       | Bob      | bob@email.com   |
+
+### Dnormalization
+Denormalization is a database optimization technique where redundant data is intentionally introduced into a database to improve query performance. In a denormalized database schema, the goal is to simplify and expedite the retrieval of data by reducing the need for joins and aggregations.
 
 
+## Data Lakes
+A data lake is a centralized repository that allows you to store and manage vast amounts of raw, unstructured, and structured data at scale. Unlike traditional databases and data warehouses, data lakes accept data of any type and structure, making them a flexible solution for storing large volumes of diverse data.
 
+### Example of Amazon Data Lake
+#### Data Ingestion and Storage (Amazon S3):
+Raw data is ingested into Amazon S3, which serves as the primary storage for the data lake.
+Data can be in various formats, including raw logs, customer reviews, and structured metadata.
+
+#### Metadata Management and ETL Processing (AWS Glue):
+AWS Glue is used for data cataloging and metadata management.
+ETL processes in AWS Glue transform raw data into structured formats, extracting valuable insights and organizing metadata.
+
+#### Serverless Querying (Amazon Athena):
+Amazon Athena allows users to run SQL queries directly on data stored in Amazon S3.
+No need to load data into a separate database; Athena provides a serverless, on-demand querying service.
+
+#### Data Warehousing and Analytics (Amazon Redshift):
+Amazon Redshift is utilized as a data warehousing solution for high-performance analytics.
+Processed and structured data from the data lake or other sources is loaded into Amazon Redshift for complex queries and analytics.
+
+### Data Flow
+
+[ Data Ingestion & Storage ] --> [ Amazon S3 ]
+
+[ Metadata Management & ETL Processing ] --> [ AWS Glue ]
+
+[ AWS Glue ] --> [ Amazon Athena ]  
+[ AWS Glue ] --> [ Amazon Redshift ]
+
+## ACID Compliance
+ACID (Atomicity, Consistency, Isolation, Durability) is a set of properties that guarantee the reliability of database transactions. 
+
+### Atomicity
+Either the entire transaction succeeds, or the entire thing fails.
+
+Atomicity in a real-world scenario is like a vending machine transaction. When you insert money to buy a snack, either the entire process of selecting, paying, and receiving the snack succeeds, or it fails, and your money is returned. You won't end up paying without receiving the snack, ensuring the integrity of the vending machine transaction.
+### Consistency
+
+All data is consistent; what you write will be what subsequent reads return, all the time.
+
+Consider an online shopping cart. If you add an item to your cart and then view the cart, consistency ensures that the item you added is consistently displayed. If you see three items in your cart after adding three, it reflects the accurate and consistent state of your cart, maintaining data consistency in the shopping experience.
+
+### Isolation
+No transaction is affected by any other transaction that is still in progress.
+
+Think of a shared document being edited by two users simultaneously. Isolation ensures that while one user is making edits, the other user sees the document as it was before any changes were made. Each user perceives an isolated view of the document, preventing interference and ensuring independent editing experiences.
+
+### Durability
+Once a transaction is commited, it stays, even if the system crashes immediately after.
+
+Imagine sending an important email. Once you hit the "send" button, durability ensures that the email is not lost, even if your device crashes immediately afterward. The email is stored securely, and even in the event of a system failure, it remains in your sent folder, showcasing the durability of the email transaction.
+
+## CAP Theorem
+The CAP theorem, also known as Brewer's theorem, is a concept in distributed computing that highlights the inherent trade-offs between three key properties in a distributed system. The three properties are:
+
+### Consistency (C):
+All nodes in the system see the same data at the same time.
+In a consistent system, any read operation on the data will return the most recent write.
+
+### Availability (A):
+Every request to the system receives a response, without a guarantee that it contains the most recent version of the information.
+
+### Partition Tolerance (P):
+The system continues to operate and provide services even when arbitrary partitions (communication breakdowns) occur between nodes.
+
+The CAP theorem asserts that, in a distributed system, it is impossible to simultaneously provide all three guarantees—Consistency, Availability, and Partition Tolerance. Instead, system designers must make trade-offs and prioritize two out of the three properties based on the specific requirements and characteristics of their applications.
+
+### The common scenarios based on the CAP theorem are:
+
+### CP (Consistency and Partition Tolerance):
+
+Prioritizes consistency and partition tolerance over immediate availability. The system may become temporarily unavailable during network partitions to maintain a consistent view of the data.
+
+### CA (Consistency and Availability):
+Prioritizes consistency and availability but may sacrifice partition tolerance. The system remains available and provides a consistent view of the data at the expense of potential disruptions during network partitions.
+
+### AP (Availability and Partition Tolerance):
+Prioritizes availability and partition tolerance over immediate consistency. The system remains available during network partitions, and clients may see slightly outdated or inconsistent data.
