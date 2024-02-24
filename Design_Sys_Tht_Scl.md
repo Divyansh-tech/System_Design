@@ -192,3 +192,121 @@ Prioritizes consistency and availability but may sacrifice partition tolerance. 
 
 ### AP (Availability and Partition Tolerance):
 Prioritizes availability and partition tolerance over immediate consistency. The system remains available during network partitions, and clients may see slightly outdated or inconsistent data.
+
+
+# Caching
+Caching is the process of storing and retrieving frequently used data or values in a designated, faster storage location, known as a cache, to enhance system performance and reduce the need to repeatedly access the original data source.
+
+![alt text](caching.png)
+
+## Cold Start:
+ This happens when the needed data is not in the cache, and the system fetches it from the original source. It's like starting from scratch, especially when the cache is initially empty.
+
+## Expiration Policy: 
+Caches often have a mechanism to determine when cached data becomes stale. An expiration policy specifies the duration for which data is considered valid. 
+
+## Eviction policies
+ In the context of caching determine which items or entries should be removed from the cache when the cache reaches its capacity and needs to make space for new data. 
+
+ ![alt text](image.png)
+
+### Least Recently Used (LRU):
+Evicts the least recently accessed items first. It assumes that items that haven't been accessed recently are less likely to be accessed in the near future. Uses a time-based approach to track when each item was last accessed.
+
+### First-In-First-Out (FIFO):
+Evicts the oldest items first. It follows a queue-like structure, where the first item that was added to the cache is the first to be removed.
+
+### Least Frequently Used (LFU):
+Evicts the least frequently accessed items first. It relies on a counter associated with each item, incrementing it upon each access. Items with the lowest count are considered for eviction. Uses a counter associated with each item to track the number of times it has been accessed.
+
+## Few Caching Technologies
+### Memcached:
+- A high-performance, distributed memory caching system.
+- Commonly used to speed up dynamic web applications by caching database query results, API responses, and more.
+- Simple key-value store with a distributed architecture.
+
+### Redis:
+- An advanced key-value store often used as a caching layer.
+- Supports various data structures, including strings, lists, sets, and more.
+- Known for its speed and versatility; can be used for caching, message queues, and real-time analytics.
+
+### Nginx:
+- A popular web server that can also act as a reverse proxy and caching server.
+- Supports caching static content and proxying requests to application servers.
+
+### EHCache:
+- An open-source, Java-based caching library.
+- Integrates with various frameworks and provides features such as in-memory caching, disk-based caching, and distributed caching.
+
+### AWS ElastiCache:
+- A fully managed caching service provided by Amazon Web Services.
+- Supports both Memcached and Redis, making it easy to deploy and manage caching clusters in the cloud.
+
+## CDN
+A Content Delivery Network (CDN) is a geographically distributed network of servers that work together to efficiently deliver web content, such as images, videos, and scripts, to users. CDNs enhance website performance by reducing latency, improving load times, and providing scalability through the strategic placement of cached content in multiple locations around the world.
+
+Ex: Cloudflare, Akamai, Amazon CloudFront
+
+>CDNs primarily cache and deliver static assets—content that doesn't frequently change and can be preloaded to multiple servers strategically placed worldwide. The types of data commonly cached by CDNs include: Images, Videos, Stylesheets, Scripts, HTML Pages,Fonts. 
+
+## Resiliency
+Resilience refers to the ability of a system or organization to adapt, recover, and maintain functionality in the face of disruptions, failures, or unforeseen challenges. It involves strategies such as adaptability, redundancy, fault tolerance, and effective recovery planning.
+
+Things that can fail:    
+- Hardware Failures     
+- Software Failures     
+- Network Failures     
+- Power Outages     
+- Data Loss     
+- Human Errors     
+
+### Certainly, here are some of the most important practices to ensure resiliency in a system or organization:
+
+#### Risk Assessment:
+Identify and assess potential risks and vulnerabilities to understand the potential impact on operations.
+
+#### Redundancy and Backups:
+Implement redundancy in critical systems and maintain regular backups of essential data.
+
+#### Monitoring and Alerting:
+Set up robust monitoring systems to detect anomalies and failures promptly, with alerting mechanisms for timely response.
+
+#### Incident Response Plan:
+Develop and regularly update an incident response plan outlining steps to be taken during disruptions.
+
+#### Recovery Strategies:
+Define clear recovery strategies, including prioritization of critical functions and efficient data restoration plans.
+
+#### Regular Testing:
+Conduct regular testing of resilience measures through drills, simulations, and tabletop exercises.
+
+#### Cloud and Multi-Cloud Strategies:
+Leverage cloud services for scalability and redundancy, considering multi-cloud strategies for added resilience.
+
+## Distributed storage solutions 
+It refer to systems that distribute and store data across multiple nodes or servers in a network. The goal is to improve data availability, fault tolerance, and scalability by leveraging the collective resources of a distributed infrastructure. In a distributed storage system, data is not stored in a central location but is distributed across multiple nodes, often in a redundant and fault-tolerant manner.
+
+### Hadoop Distributed File System (HDFS)
+It is a distributed file system designed to store and manage large volumes of data in a distributed and fault-tolerant manner. It is a key component of the Apache Hadoop ecosystem, which is widely used for processing and analyzing big data. HDFS is inspired by the Google File System (GFS) and is designed to provide high throughput, fault tolerance, and horizontal scalability.
+
+Key characteristics of HDFS include:
+
+#### Distributed Storage:
+HDFS breaks large files into smaller blocks (typically 128 MB or 256 MB in size) and distributes these blocks across multiple nodes in a Hadoop cluster.
+
+#### Replication:
+To ensure fault tolerance, each block of data is replicated across multiple nodes (typically three). This replication helps in recovering data in case of node failures.
+
+#### Master-Slave Architecture:
+HDFS follows a master-slave architecture with two main components: the NameNode and DataNodes.
+NameNode: The master server that manages the metadata, such as file structure and block locations.
+DataNodes: The slave servers that store the actual data blocks.
+
+#### Scalability:
+HDFS is designed to scale horizontally by adding more nodes to the cluster. This allows the storage capacity to grow seamlessly as the volume of data increases.
+
+#### Data Integrity:
+HDFS employs checksums for each block of data to ensure data integrity. If a block is corrupted, the system can detect and handle the error.
+
+#### High Throughput:
+HDFS is optimized for high-throughput data access, making it well-suited for applications that involve large-scale data processing, such as batch processing and analytics.
